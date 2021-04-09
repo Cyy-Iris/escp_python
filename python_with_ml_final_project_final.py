@@ -98,7 +98,7 @@ X_sm = X_sm.drop(['id'], axis = 1)
 
 X_sm_num = X_sm[['hour','N1','N2','N3','N4','N5', 'N6','N7', 'N8', 'N9', 'N10']]
 
-# Inspect the distribution of the numerical variables before scaling
+#inspect the distribution of the numerical variables before scaling
 fig, subplot_arr = plt.subplots(3,4,figsize=(18,12))
 plt.subplot(3, 4, 1)
 plt.hist(X_sm_num.loc[:,"hour"])
@@ -109,7 +109,7 @@ for i in range(0,10):
   plt.hist(X_sm_num.loc[:,col])
   plt.title(col)
 
-#based on distribution, apply scaling to numerical features:
+#apply scaling to numerical features based on distribution:
 #apply standardscaler to hour
 Scaler = StandardScaler()
 X_sm_num.iloc[:,0:1] = Scaler.fit_transform(X_sm_num.iloc[:,0:1])
@@ -138,12 +138,12 @@ X_sm_c1
 
 #2. rare label + weight of evidence (WOE) encoding:
 #as the categorical features are hashed, we do not know if they are ordinal data 
-#so to avoid ranking these features, we apply rare label + weight of evidence encoding for C5 
-#this is for the Logistic Regression model only, as ordinality isn't a problem for tree-based models
+#so to avoid ranking these features, we apply rare label + weight of evidence encoding 
+#this is for the Logistic Regression model, as ordinality isn't a problem for tree-based models
 
 # rare label encoding: 
 # we set the threshold to 0.1 
-# categories with proporation lower than 0.1 may not have any class label 1 due to the label imbalance
+# categories with proportion lower than 0.1 may not have any class label 1 due to the label imbalance
 # and this will impede the application of WOE encoding (log 0 is undefined)
 
 encoder = RareLabelEncoder(tol=0.1, n_categories=2, variables=['C1','C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12'],
@@ -185,7 +185,7 @@ print("Coefficients:")
 print(model_coeffs)
 f_val, p_val = f_regression(X_train, y_train)
 print("\n")
-print("P value:") # all features are stastically significant
+print("P value:") # all features but two are statistically significant
 p_val
 
 X_train.columns
@@ -231,8 +231,6 @@ print('train score:', LR_final.score(X_train_new, y_train))
 # scoring with test data
 print('test score:', LR_final.score(X_test_new, y_test))
 
-LR_final.predict_proba(X_test_new)
-
 """# Naive Bayes"""
 
 #use the same train test set as logistic regression
@@ -257,8 +255,6 @@ print('train score:', NB.score(X_train_new, y_train))
 
 # scoring with test data
 print('test score:', NB.score(X_test_new, y_test))
-
-NB.predict_proba(X_test_new)
 
 """# Random Forest"""
 
@@ -301,7 +297,7 @@ print('test score:', RF.score(X_test, y_test))
 """# 4. Conclusion"""
 
 #All 3 models have the same train test scores
-#However, Logistic Regression & Naive Bayes have fewer training features 
+#However, Logistic Regression & Naive Bayes have fewer training features, so they are better models 
 #We'll pick logistic regression to create the probablities table
 
 """# Testing data preprocessing """
